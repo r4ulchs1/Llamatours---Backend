@@ -29,6 +29,7 @@ public class DestinoMapper {
         dto.setUrlimg1(entity.getUrlimg1());
         dto.setUrlimg2(entity.getUrlimg2());
         dto.setUrlimg3(entity.getUrlimg3());
+        dto.setUrlimg4(entity.getUrlimg4());
 
         return dto;
     }

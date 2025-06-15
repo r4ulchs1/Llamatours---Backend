@@ -40,7 +40,7 @@ public class DestinoController {
     public String mostraFormularioEdicion(@PathVariable Long id, Model model) {
         Optional<DestinoDTO> desOptional=destinoService.findDestinoById(id);
         if (desOptional.isPresent()) {
-        model.addAttribute("destino", desOptional);
+        model.addAttribute("destino", desOptional.get());
         model.addAttribute("departamentos", DepartamentoNombre.values());
             return "destinos/formulario";
         }else{
@@ -66,7 +66,7 @@ public class DestinoController {
                 redirectAttributes.addFlashAttribute("mensaje","Destino Actualizado correctamente");
             }
             
-            return "redirect: /destinos/lista";
+            return "redirect:/destinos/lista";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error","Error al guardar: "+e.getMessage());
             if (destinoDTO.getId()==null) {
