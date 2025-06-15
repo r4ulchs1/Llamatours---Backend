@@ -109,11 +109,11 @@ public class ReservacionService {
         return reservacionRepo.findByDestinoId(destinoId).stream().map(reservacionMapper::toDTO).collect(Collectors.toList());
     }
 
-    public Reservacion updateEstadoReserva(Long reservacionId, EstadoReserva estado){
+    public ReservacionDTO updateEstadoReserva(Long reservacionId, EstadoReserva estado){
         Reservacion reservacion=reservacionRepo.findById(reservacionId)
             .orElseThrow(()-> new RuntimeException("Reservacion no encontrada."));
         reservacion.setEstado(estado);
-        return reservacionRepo.save(reservacion);
-        // return reservacionMapper.toDTO(reservacionRepo.save(reservacion));
+        // return reservacionRepo.save(reservacion);
+        return reservacionMapper.toDTO(reservacionRepo.save(reservacion));
     }
 }
