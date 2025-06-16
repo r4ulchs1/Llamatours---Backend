@@ -1,0 +1,43 @@
+<div th:fragments="footer">
+    <footer class="bg-dark text-light text-center mt-4 ">
+        <div>
+            <img th:src="@{/imagenes/headerFooter/logoLlama.png}" width="120px" alt="">
+        </div>
+        <div class="container card-group">
+            <div class="col-md-6">
+                <div class="card bg-dark">
+                    <div class="card-body text-start">
+                        <h2 class="text-warning">Llama Tours</h2>
+                        <p class="text-secondary">Somos una destacada empresa de turismo con 15 años de experiencia en el mercado...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark">
+                    <div class="card-body text-start">
+                        <h2 class="text-warning">Links Rapidos</h2>
+                        <ul class="list-group">
+                            <li><a class="link-secondary link-underline-opacity-0" th:href="@{index}">Inicio</a></li>
+                            <li><a class="link-secondary link-underline-opacity-0" th:href="@{viaje}">Viajes</a></li>
+                            <li><a class="link-secondary link-underline-opacity-0" th:href="@{contactanos}">Contacto</a></li>
+                            <li><a class="link-secondary link-underline-opacity-0" th:href="@{SobreNosotros}">Sobre Nosotros</a></li>
+                        </ul>th:
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark">
+                    <div class="card-body text-start">
+                        <h2 class="text-warning">Contactanos</h2>
+                        <ul class="list-group">
+                            <li><a class="link-secondary link-underline-opacity-0" href="https://wa.me/51900460347" target="_blank"><i class="bi bi-telephone-fill" style="width: 20px;"></i> +51 900460347</a></li>
+                            <li><a class="link-secondary link-underline-opacity-0" href="mailto:LlamaTours@viajes.com"><i class="bi bi-envelope-fill" style="width: 20px;"></i> LlamaTours@viajes.com</a></li>
+                            <li><a class="link-secondary link-underline-opacity-0" href="https://www.google.com/maps?q=Av.+28+de+Julio+-+La+Victoria+-+Lima" target="_blank"><i class="bi bi-geo-alt-fill" style="width: 20px;"></i> Av. 28 de Julio - La Victoria - Lima</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-secondary">Copyright &copy; 2024 All Rights Reserved by LlamaTours</p>
+    </footer>
+</div>

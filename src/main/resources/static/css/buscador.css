@@ -1,0 +1,84 @@
+.fondo-buscador{
+    background-image: url('../img/fondo.jpg');
+    background-size: cover; 
+    background-position: center center; 
+}
+
+svg path {
+    fill: #155ce9; /* gris claro */
+    stroke: #000;
+    stroke-width: 0.5;
+    transition: all 0.3s ease-in-out;
+}
+
+svg path:hover {
+    fill: #5f98ec; /* azul Bootstrap */
+    transform: translateY(-4px);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    cursor: pointer;
+}
+
+.disable {
+      pointer-events: none; /* Evita que se le pueda hacer clic */
+      fill: #fffdfd; /* Color gris para indicar que está desactivado */
+      opacity: 0.7; /* Más transparente */
+      cursor: not-allowed;
+}
+
+/*header transparente*/
+.navbar-blur {
+    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.247);
+}
+
+.destino-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            background-color: #1e1e2f;
+        }
+
+        .destino-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 123, 255, 0.3);
+            border-color: #0d6efd;
+        }
+
+        .destino-card .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .destino-card .card-text,
+        .destino-card p,
+        .destino-card span {
+            color: #ddd;
+        }
+
+        .card-img-top img {
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .card-header-color {
+            height: 5px;
+            background: linear-gradient(90deg, #0d6efd, #20c997);
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .section-title {
+            color: #ffc107;
+        }
+
+        h2 {
+            color: #0dcaf0;
+        }
+
+        .fitcontent{
+            height: 230px;
+            width: 100%;
+            object-fit: cover;
+        }

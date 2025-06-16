@@ -1,6 +1,8 @@
 package com.spring.llamatours.services;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,5 +77,19 @@ public class DestinoService {
     @Transactional
     public List<DestinoDTO> findDestinosByDepaNombre(DepartamentoNombre depaNombre){
         return destinoRepo.findByDepartamento(depaNombre).stream().map(destinoMapper::toDTO).collect(Collectors.toList());
+    }
+
+    //para viaje.html
+    @Transactional
+    public Map<DepartamentoNombre, List<DestinoDTO>> obtenerDestinosAgrupadosPorDepartamento() {
+        List<DestinoDTO> destinos = findAllDestinos(); // ya convierte desde el repo con el mapper
+
+        // Convertimos el String del DTO a enum para poder agrupar
+        return destinos.stream()
+                .filter(d -> d.getDepartamento() != null)
+                .collect(Collectors.groupingBy(
+                        d -> DepartamentoNombre.valueOf(d.getDepartamento()), // agrupamos usando el enum real
+                        LinkedHashMap::new,
+                        Collectors.toList()));
     }
 }
