@@ -109,4 +109,5 @@ public class DestinoController {
             return "redirect:/destinos/lista";
         }
     }
+
 }

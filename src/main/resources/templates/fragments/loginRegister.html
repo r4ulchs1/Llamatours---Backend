@@ -1,0 +1,62 @@
+<div th:fragment="loginRegisterModal">
+    <!-- Login Modal -->
+    <div class="modal fade border border-secondary rounded" tabindex="-1" id="loginUsuarios">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Iniciar Sesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center">
+                    <form th:action="@{/login}" method="post" class="w-100">
+                        <input type="email" class="form-control mb-2" name="username" placeholder="Correo Electrónico" required>
+                        <input type="password" class="form-control mb-2" name="password" placeholder="Password" required>
+
+                        <!-- Mostrar mensaje de error o éxito en login -->
+                        <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}"></div>
+                        <div th:if="${msg}" class="alert alert-success mt-2" th:text="${msg}"></div>
+
+                        <a href="#" class="mb-2">Olvidé mi contraseña</a>
+                        <button class="btn btn-primary mt-2" type="submit">Ingresar</button>
+                    </form>
+                    <img class="w-50 mt-3" src="img/loginAndRegister/llamitaLogin.gif" alt="llama">
+                </div>
+                <div class="modal-footer">
+                    <label class="form-label">¿Nuevo usuario?</label>
+                    <a role="button" data-bs-toggle="modal" data-bs-target="#registroUsuarios" data-bs-dismiss="modal">Regístrate</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade border border-secondary rounded" tabindex="-1" id="registroUsuarios">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrarse</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center">
+                    <form th:action="@{/register}" method="post" class="w-100">
+                        <input type="email" class="form-control mb-2" name="email" placeholder="Correo Electrónico" required>
+                        <input type="text" class="form-control mb-2" name="fullName" placeholder="Nombres y Apellidos" required>
+                        <input type="text" class="form-control mb-2" name="phone" placeholder="Número de Celular" required>
+                        <input type="password" class="form-control mb-2" name="password" placeholder="Ingrese su contraseña" required>
+
+                        <!-- Mostrar mensaje de error o éxito en registro -->
+                        <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}"></div>
+                        <div th:if="${msg}" class="alert alert-success mt-2" th:text="${msg}"></div>
+
+                        <button class="btn btn-primary mt-2" type="submit">Registrarse</button>
+                    </form>
+                    <img class="w-50 mt-3" src="img/loginAndRegister/llamitaLogin.gif" alt="llama">
+                </div>
+                <div class="modal-footer">
+                    <label class="form-label">¿Ya registrado?</label>
+                    <a role="button" data-bs-toggle="modal" data-bs-target="#loginUsuarios" data-bs-dismiss="modal">Ya soy usuario</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
