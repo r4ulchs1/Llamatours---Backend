@@ -44,7 +44,7 @@ public class ReservacionController {
     }
     
     @GetMapping("/editar/{id}")
-    public String mostraFormularioEdicion(@PathVariable Long id, Model model) {
+    public String mostraFormularioEdicion(@PathVariable Long id, Model model,RedirectAttributes redirectAttributes) {
         Optional<ReservacionDTO> resOptional=reservacionService.findReservacionById(id);//ojito aca
         if (resOptional.isPresent()) {
         model.addAttribute("reservacion", resOptional.get());
@@ -52,6 +52,7 @@ public class ReservacionController {
         model.addAttribute("destinos", destinoService.findAllDestinos());
             return "reservaciones/formulario";
         }else{
+            redirectAttributes.addFlashAttribute("error","Reservacion no encontrada: "+id);
             return "redirect:/reservaciones/lista";
         }
     }
