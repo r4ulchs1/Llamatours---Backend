@@ -1,28 +1,32 @@
-.fondo-buscador{
-    background-image: url('../img/fondo.jpg');
-    background-size: cover; 
-    background-position: center center; 
+
+/* Ajuste para el scroll suave */
+html {
+    scroll-behavior: smooth;
 }
 
-svg path {
-    fill: #155ce9; /* gris claro */
-    stroke: #000;
-    stroke-width: 0.5;
-    transition: all 0.3s ease-in-out;
+/* Offset para las secciones */
+h2[id] {
+    scroll-margin-top: 80px; /* Ajusta según tu header */
+    padding-top: 20px;
+    position: relative;
 }
 
-svg path:hover {
-    fill: #5f98ec; /* azul Bootstrap */
-    transform: translateY(-4px);
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+/* Estilos para el mapa SVG */
+#mapaPeru path.activo {
+    fill: #0d6efd;
     cursor: pointer;
+    transition: fill 0.3s ease;
 }
 
-.disable {
-      pointer-events: none; /* Evita que se le pueda hacer clic */
-      fill: #fffdfd; /* Color gris para indicar que está desactivado */
-      opacity: 0.7; /* Más transparente */
-      cursor: not-allowed;
+#mapaPeru path.activo:hover {
+    fill: #0b5ed7;
+    filter: drop-shadow(0 0 5px rgba(13, 110, 253, 0.5));
+}
+
+#mapaPeru path.disable {
+    fill: #495057;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /*header transparente*/

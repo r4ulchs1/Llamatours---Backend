@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,9 +28,17 @@ public class PaginasController {
 
     @GetMapping("/viaje")
     public String mostrarViajeAgrupado(Model model) {
+        // Esto YA lo tenías (no cambia)
         Map<DepartamentoNombre, List<DestinoDTO>> destinosPorDep = destinoService
                 .obtenerDestinosAgrupadosPorDepartamento();
         model.addAttribute("destinosPorDepartamento", destinosPorDep);
+        
+        // Esto es NUEVO (se añade para el mapa)
+        List<String> departamentosDisponibles = destinosPorDep.keySet().stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        model.addAttribute("departamentosDisponibles", departamentosDisponibles);
+        
         return "paginas/viaje";
     }
 

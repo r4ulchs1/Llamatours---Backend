@@ -4,91 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pagos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
 
-    <div th:replace="fragments/adminHeader :: cabecera"></div>
-    
-    <div class="container mt-4">
-        <div th:if="${mensaje}">
-            <p th:text="${mensaje}"></p>
-        </div>
-        <div th:if="${error}">
-            <p th:text="${error}"></p>
-        </div>
-        <p><a href="/pagos/registro" class="btn btn-primary">Registrar nuevo Pago</a></p>
+<div th:replace="fragments/adminHeader :: cabecera"></div>
 
-        <form th:action="@{/pagos/listaPorUsuario}" method="get" class="mb-3">
-            <div>
-                <label for="">Filtrar por usuario</label>
-            </div>
-            <div>
+<div class="container mt-4">
+
+    <!-- Alertas -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Gestión de Pagos</h1>
+        <a href="/pagos/registro" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Registrar nuevo Pago
+        </a>
+    </div>
+
+    <!-- Filtro por Usuario -->
+    <form th:action="@{/pagos/listaPorUsuario}" method="get" class="mb-4 p-3 border rounded bg-light">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label">Filtrar por usuario</label>
                 <select name="usuarioId" class="form-select">
                     <option value="">Todos los Usuarios</option>
                     <option th:each="user: ${usuarios}"
                             th:value="${user.id}"
                             th:text="${user.nombre}"
-                            th:selected="${userSeleccionado != null and userSeleccionado == user.id}"> 
+                            th:selected="${userSeleccionado != null and userSeleccionado == user.id}">
                     </option>
                 </select>
             </div>
-            <div>
-                <button type="submit" class="btn btn-secondary">Filtrar</button>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-secondary w-100">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
             </div>
-        </form>
+        </div>
+    </form>
 
-        <form th:action="@{/pagos/listaPorReservacion}" method="get" class="mb-3">
-            <div>
-                <label for="">Filtrar por reservacion</label>
-            </div>
-            <div>
+    <!-- Filtro por Reservación -->
+    <form th:action="@{/pagos/listaPorReservacion}" method="get" class="mb-4 p-3 border rounded bg-light">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label">Filtrar por reservación</label>
                 <select name="reservacionId" class="form-select">
                     <option value="">Todas las reservaciones</option>
                     <option th:each="res: ${reservaciones}"
                             th:value="${res.id}"
                             th:text="'Reserva ID: ' + ${res.id} + ' - Usuario: ' + ${res.usuarioId} + ' - Destino: ' + ${res.destinoId}"
-                            th:selected="${reservaSeleccionado != null and reservaSeleccionado == res.id}"> 
+                            th:selected="${reservaSeleccionado != null and reservaSeleccionado == res.id}">
                     </option>
                 </select>
             </div>
-            <div>
-                <button type="submit" class="btn btn-secondary">Filtrar</button>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-secondary w-100">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
             </div>
-        </form>
-        <table class="table">
-            <thead>
+        </div>
+    </form>
+
+    <!-- Tabla de Pagos -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>ID</th>
-                    <th>Reservacion ID</th>
+                    <th>Reservación</th>
                     <th>Monto</th>
-                    <th>Metodo Pago</th>
+                    <th>Método de Pago</th>
                     <th>Estado</th>
-                    <th>Fecha Pago</th>
-                    <th>Acciones</th>
+                    <th>Fecha de Pago</th>
+                    <th class="text-end">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="pago: ${pagos}">
-                    <td th:text="${pago.id}"></td>
+                <tr th:each="pago: ${pagos}" class="hover-highlight">
+                    <td th:text="${pago.id}" class="fw-bold"></td>
                     <td th:text="${pago.reservacionId}"></td>
-                    <td th:text="${pago.monto}"></td>
+                    <td><span class="badge bg-info" th:text="${pago.monto}"></span></td>
                     <td th:text="${pago.metodoPago}"></td>
-                    <td th:text="${pago.estado}"></td>
-                    <td th:text="${pago.fechaPago}"></td>
                     <td>
-                        <a th:href="@{/pagos/editar/{id}(id=${pago.id})}" class="btn btn-info">Editar</a>
-                        <form th:action="@{/pagos/cancelar}" method="post">
-                            <input type="hidden" name="id" th:value="${pago.id}">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Seguro?')">Eliminar</button>
-                        </form>
+                        <span th:if="${pago.estado == 'COMPLETADO'}" class="badge bg-success" th:text="${pago.estado}"></span>
+                        <span th:if="${pago.estado == 'PENDIENTE'}" class="badge bg-warning text-dark" th:text="${pago.estado}"></span>
+                        <span th:if="${pago.estado == 'CANCELADO'}" class="badge bg-danger" th:text="${pago.estado}"></span>
+                        <span th:if="${pago.estado != 'COMPLETADO' and pago.estado != 'PENDIENTE' and pago.estado != 'CANCELADO'}" class="badge bg-secondary" th:text="${pago.estado}"></span>
+                    </td>
+                    <td th:text="${pago.fechaPago}"></td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a th:href="@{/pagos/editar/{id}(id=${pago.id})}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/pagos/cancelar}" method="post" class="d-inline">
+                                <input type="hidden" name="id" th:value="${pago.id}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro de eliminar este pago?')" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(pagos)}">
-                    <td colspan="8">No hay pagos registradas</td>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        <i class="bi bi-info-circle fs-4"></i>
+                        <p class="mb-0">No hay pagos registrados</p>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .hover-highlight:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+</style>
 </body>
 </html>
