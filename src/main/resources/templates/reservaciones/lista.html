@@ -29,7 +29,7 @@
                     <option th:each="user: ${usuarios}"
                             th:value="${user.id}"
                             th:text="${user.nombre}"
-                            th:selected="${userSeleccionado != null and userSeleccionado == user.nombre}"> 
+                            th:selected="${userSeleccionado != null and userSeleccionado == user.id}"> 
                     </option>
                 </select>
             </div>
@@ -37,26 +37,41 @@
                 <button type="submit" class="btn btn-secondary">Filtrar</button>
             </div>
         </form>
-        <div>
-            <div th:each="reservacion: ${reservaciones}">
-                <h2 th:text="${reservacion.usuarioId}"></h2>
-                <h2 th:text="${reservacion.destinoId}"></h2>
-                <h2 th:text="${reservacion.fechaReserva}"></h2>
-                <span th:text="${reservacion.cantidadPersonas}"></span>
-                <p th:text="${reservacion.nombresPasajeros}"></p>
-                <p th:text="${reservacion.estado}"></p>
-                <div>
-                    <a th:href="@{/reservaciones/editar/{id}(id=${reservacion.id})}" class="btn btn-info">Editar</a>
-                    <form th:action="@{/reservaciones/eliminar}" method="post">
-                        <input type="hidden" th:value="${reservacion.id}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Seguro?')">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-            <div th:if="${#lists.isEmpty(reservaciones)}">
-                <p>No hay destinos registrados</p>
-            </div>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario ID</th>
+                    <th>Destino ID</th>
+                    <th>Fecha Reserva</th>
+                    <th>Personas</th>
+                    <th>Pasajeros</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reservacion: ${reservaciones}">
+                    <td th:text="${reservacion.id}"></td>
+                    <td th:text="${reservacion.usuarioId}"></td>
+                    <td th:text="${reservacion.destinoId}"></td>
+                    <td th:text="${reservacion.fechaReserva}"></td>
+                    <td th:text="${reservacion.cantidadPersonas}"></td>
+                    <td th:text="${reservacion.nombresPasajeros}"></td>
+                    <td th:text="${reservacion.estado}"></td>
+                    <td>
+                        <a th:href="@{/reservaciones/editar/{id}(id=${reservacion.id})}" class="btn btn-info">Editar</a>
+                        <form th:action="@{/reservaciones/eliminar}" method="post">
+                            <input type="hidden" name="id" th:value="${reservacion.id}">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Seguro?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(reservaciones)}">
+                    <td colspan="8">No hay reservaciones registradas</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

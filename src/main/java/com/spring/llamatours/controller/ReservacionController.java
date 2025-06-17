@@ -109,6 +109,7 @@ public class ReservacionController {
                 List<UsuarioDTO> usuarios= usuarioService.findAllUsuarios();
                 model.addAttribute("reservaciones", reservacionDTOs);
                 model.addAttribute("usuarios", usuarios);
+                model.addAttribute("userSeleccionado", idd);
                 return "reservaciones/lista";
             }else{
                 redirectAttributes.addFlashAttribute("error","Usuario no existe");
@@ -119,5 +120,4 @@ public class ReservacionController {
             return "redirect:/reservaciones/lista";
         }
     }
-    
 }
