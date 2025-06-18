@@ -3,7 +3,6 @@ package com.spring.llamatours.DTOs;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -21,8 +20,6 @@ public class PagoDTO {
     @Min(value = 1, message = "El ID de reservación debe ser un número positivo.")
     private Long reservacionId;
 
-    @NotNull(message = "El monto no puede ser nulo.")
-    @DecimalMin(value = "0.01", message = "El monto debe ser mayor a cero.")
     private BigDecimal monto;
 
     @NotBlank(message = "El método de pago no puede estar vacío.")
