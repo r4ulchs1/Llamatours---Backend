@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,6 +17,7 @@ import com.spring.llamatours.services.DestinoService;
 import com.spring.llamatours.services.ReservacionService;
 import com.spring.llamatours.services.UsuarioService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -68,7 +70,13 @@ public class ReservacionController {
     }
     
     @PostMapping("/guardar")
-    public String guardarReservacion(@ModelAttribute ReservacionDTO reservacionDTO, RedirectAttributes redirectAttributes) {
+    public String guardarReservacion(@Valid @ModelAttribute("reservacion") ReservacionDTO reservacionDTO,BindingResult bioBindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bioBindingResult.hasErrors()) {
+            model.addAttribute("reservacion", reservacionDTO);
+            model.addAttribute("usuarios", usuarioService.findAllUsuarios()); 
+            model.addAttribute("destinos", destinoService.findAllDestinos());
+            return "reservaciones/formulario";
+        }
         try {
             if (reservacionDTO.getId()==null) {
                 reservacionService.saveReservacion(reservacionDTO);

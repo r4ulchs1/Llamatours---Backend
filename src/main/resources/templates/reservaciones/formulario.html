@@ -9,6 +9,13 @@
           crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
 <body>
 <div class="container mt-5">
     <!-- Título y botón de regreso -->
@@ -32,7 +39,7 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="usuario" class="form-label">Usuario</label>
-                <select id="usuario" th:field="*{usuarioId}" class="form-select" required>
+                <select id="usuario" th:field="*{usuarioId}" class="form-select">
                     <option value="">--Selecciona un usuario--</option>
                     <option th:each="user : ${usuarios}" th:value="${user.id}" th:text="${user.nombre}"></option>
                 </select>
@@ -40,7 +47,7 @@
 
             <div class="col-md-6">
                 <label for="destino" class="form-label">Destino</label>
-                <select id="destino" th:field="*{destinoId}" class="form-select" required>
+                <select id="destino" th:field="*{destinoId}" class="form-select">
                     <option value="">--Selecciona un destino--</option>
                     <option th:each="destino : ${destinos}" th:value="${destino.id}" th:text="${destino.titulo}"></option>
                 </select>
@@ -48,17 +55,20 @@
 
             <div class="col-md-6">
                 <label for="fechaReserva" class="form-label">Fecha de Reserva</label>
-                <input type="date" id="fechaReserva" th:field="*{fechaReserva}" class="form-control" required>
+                <input type="date" id="fechaReserva" th:field="*{fechaReserva}" class="form-control">
+                <p th:errors="*{fechaReserva}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="cantidadPersonas" class="form-label">Cantidad de Personas</label>
-                <input type="number" id="cantidadPersonas" th:field="*{cantidadPersonas}" class="form-control" required>
+                <input type="number" id="cantidadPersonas" th:field="*{cantidadPersonas}" class="form-control">
+                <p th:errors="*{cantidadPersonas}" class="error-message"></p>
             </div>
 
             <div class="col-12">
                 <label for="nombresPasajeros" class="form-label">Nombres de los Pasajeros</label>
-                <textarea id="nombresPasajeros" th:field="*{nombresPasajeros}" class="form-control" rows="3" required></textarea>
+                <textarea id="nombresPasajeros" th:field="*{nombresPasajeros}" class="form-control" rows="3"></textarea>
+                <p th:errors="*{nombresPasajeros}" class="error-message"></p>
             </div>
         </div>
 

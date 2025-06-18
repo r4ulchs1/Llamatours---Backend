@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -12,6 +13,7 @@ import com.spring.llamatours.DTOs.DestinoDTO;
 import com.spring.llamatours.enums.DepartamentoNombre;
 import com.spring.llamatours.services.DestinoService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -56,7 +58,12 @@ public class DestinoController {
     }
     
     @PostMapping("/guardar")
-    public String guardarDestino(@ModelAttribute DestinoDTO destinoDTO, RedirectAttributes redirectAttributes) {
+    public String guardarDestino(@Valid @ModelAttribute("destino") DestinoDTO destinoDTO, BindingResult bindingResult,Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("destino", destinoDTO);
+            model.addAttribute("departamentos", DepartamentoNombre.values());
+            return "destinos/formulario";
+        }
         try {
             if (destinoDTO.getId()==null) {
                 destinoService.saveDestino(destinoDTO);
@@ -89,7 +96,7 @@ public class DestinoController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error","Error al eliminar destion: "+e.getMessage());
         }
-        return "redirect:/destino/lista";
+        return "redirect:/destinos/lista";
     }
     
     @GetMapping("/listaPorDepartamento")

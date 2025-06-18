@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,6 +17,7 @@ import com.spring.llamatours.services.PagoService;
 import com.spring.llamatours.services.ReservacionService;
 import com.spring.llamatours.services.UsuarioService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -72,7 +74,12 @@ public class PagoController {
     }
     
     @PostMapping("/guardar")
-    public String postMethodName(@ModelAttribute PagoDTO pagoDTO, RedirectAttributes redirectAttributes) {
+    public String postMethodName(@Valid @ModelAttribute("pago") PagoDTO pagoDTO,BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("pago", pagoDTO);
+            model.addAttribute("reservaciones", reservacionService.findAllReservaciones());
+            return "pagos/formulario";
+        }
         try {
             if (pagoDTO.getId()==null) {
                 pagoService.savePago(pagoDTO);

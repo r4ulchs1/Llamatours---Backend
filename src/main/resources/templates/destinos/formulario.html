@@ -8,6 +8,13 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -33,75 +40,89 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="titulo" class="form-label">Título</label>
-                <input type="text" id="titulo" th:field="*{titulo}" class="form-control" required>
+                <input type="text" id="titulo" th:field="*{titulo}" class="form-control">
+                <p th:errors="*{titulo}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="departamento" class="form-label">Departamento</label>
-                <select name="departamento" id="departamento" th:field="*{departamento}" class="form-select" required>
+                <select name="departamento" id="departamento" th:field="*{departamento}" class="form-select">
                     <option value="">Todos los departamentos</option>
                     <option th:each="depa: ${T(com.spring.llamatours.enums.DepartamentoNombre).values()}"
                             th:value="${depa.name()}"
                             th:text="${depa.nombreVisible}">
                     </option>
                 </select>
+                <p th:errors="*{departamento}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="provincia" class="form-label">Provincia</label>
-                <input type="text" id="provincia" th:field="*{provincia}" class="form-control" required>
+                <input type="text" id="provincia" th:field="*{provincia}" class="form-control">
+                <p th:errors="*{provincia}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="precio" class="form-label">Precio</label>
-                <input type="number" step="0.01" id="precio" th:field="*{precio}" class="form-control" required>
+                <input type="number" step="0.01" id="precio" th:field="*{precio}" class="form-control">
+                <p th:errors="*{precio}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="fechaInicio" class="form-label">Fecha Inicio</label>
-                <input type="date" id="fechaInicio" th:field="*{fechaInicio}" class="form-control" required>
+                <input type="date" id="fechaInicio" th:field="*{fechaInicio}" class="form-control">
+                <p th:errors="*{fechaInicio}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="fechaFin" class="form-label">Fecha Fin</label>
-                <input type="date" id="fechaFin" th:field="*{fechaFin}" class="form-control" required>
+                <input type="date" id="fechaFin" th:field="*{fechaFin}" class="form-control">
+                <p th:errors="*{fechaFin}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="dias" class="form-label">Días</label>
-                <input type="number" id="dias" th:field="*{dias}" class="form-control" required>
+                <input type="number" id="dias" th:field="*{dias}" class="form-control">
+                <p th:errors="*{dias}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="cuposDisponibles" class="form-label">Cupos Disponibles</label>
-                <input type="number" id="cuposDisponibles" th:field="*{cuposDisponibles}" class="form-control" required>
+                <input type="number" id="cuposDisponibles" th:field="*{cuposDisponibles}" class="form-control" >
+                <p th:errors="*{cuposDisponibles}" class="error-message"></p>
             </div>
 
             <div class="col-12">
                 <label for="descripcion" class="form-label">Descripción</label>
-                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="3" required></textarea>
+                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="3"></textarea>
+                <p th:errors="*{descripcion}" class="error-message"></p>
             </div>
 
             <div class="col-12">
                 <label for="actividades" class="form-label">Actividades</label>
-                <textarea id="actividades" th:field="*{actividades}" class="form-control" rows="3" required></textarea>
+                <textarea id="actividades" th:field="*{actividades}" class="form-control" rows="3"></textarea>
+                <p th:errors="*{actividades}" class="error-message"></p>
             </div>
 
             <div class="col-md-6">
                 <label for="urlimg1" class="form-label">Imagen 1</label>
-                <input type="text" id="urlimg1" th:field="*{urlimg1}" class="form-control" required>
+                <input type="text" id="urlimg1" th:field="*{urlimg1}" class="form-control">
+                <p th:errors="*{urlimg1}" class="error-message"></p>
             </div>
             <div class="col-md-6">
                 <label for="urlimg2" class="form-label">Imagen 2</label>
-                <input type="text" id="urlimg2" th:field="*{urlimg2}" class="form-control" required>
+                <input type="text" id="urlimg2" th:field="*{urlimg2}" class="form-control">
+                <p th:errors="*{urlimg2}" class="error-message"></p>
             </div>
             <div class="col-md-6">
                 <label for="urlimg3" class="form-label">Imagen 3</label>
-                <input type="text" id="urlimg3" th:field="*{urlimg3}" class="form-control" required>
+                <input type="text" id="urlimg3" th:field="*{urlimg3}" class="form-control">
+                <p th:errors="*{urlimg3}" class="error-message"></p>
             </div>
             <div class="col-md-6">
                 <label for="urlimg4" class="form-label">Imagen 4</label>
-                <input type="text" id="urlimg4" th:field="*{urlimg4}" class="form-control" required>
+                <input type="text" id="urlimg4" th:field="*{urlimg4}" class="form-control">
+                <p th:errors="*{urlimg4}" class="error-message"></p>
             </div>
         </div>
 
