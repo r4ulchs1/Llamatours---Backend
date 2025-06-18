@@ -30,6 +30,7 @@
     <!-- Formulario -->
     <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post" class="border rounded p-4 bg-light shadow-sm">
         <input type="hidden" th:field="*{id}">
+        <input type="hidden" name="origen" th:value="${origen}"/>
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>

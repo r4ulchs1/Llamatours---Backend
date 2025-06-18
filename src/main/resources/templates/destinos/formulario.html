@@ -28,6 +28,7 @@
     <!-- Formulario -->
     <form th:action="@{/destinos/guardar}" th:object="${destino}" method="post" class="bg-light p-4 rounded shadow-sm border">
         <input type="hidden" th:field="*{id}">
+        <input type="hidden" name="origen" th:value="${origen}" />
 
         <div class="row g-3">
             <div class="col-md-6">

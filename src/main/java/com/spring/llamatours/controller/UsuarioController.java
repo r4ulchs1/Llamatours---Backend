@@ -44,30 +44,46 @@ public class UsuarioController {
     }
     
     @GetMapping("/registro")
-    public String mostrarFormularioRegistro(Model model) {
+    public String mostrarFormularioRegistro(
+        @RequestParam(required = false) String origen,
+        Model model
+    ) {
         model.addAttribute("usuario", new UsuarioDTO());
+        model.addAttribute("origen", origen); // lo mandamos al formulario también
         return "usuarios/formulario";
     }
 
 
 
-    @PostMapping("/guardar") //guardar/actualizar
-    public String guardarUsuario(@ModelAttribute UsuarioDTO usuarioDTO, RedirectAttributes redirectAttributes) {
+    @PostMapping("/guardar") // guardar/actualizar
+    public String guardarUsuario(
+            @ModelAttribute UsuarioDTO usuarioDTO,
+            @RequestParam(required = false) String origen,
+            RedirectAttributes redirectAttributes) {
         try {
-            if (usuarioDTO.getId()==null) {
+            if (usuarioDTO.getId() == null) {
                 usuarioService.saveUsuario(usuarioDTO);
                 redirectAttributes.addFlashAttribute("mensaje", "Registrado Correctamente");
-            }else{
+            } else {
                 usuarioService.updateUsuario(usuarioDTO.getId(), usuarioDTO);
                 redirectAttributes.addFlashAttribute("mensaje", "Actualizado Correctamente");
             }
-            return "redirect:/usuarios/lista";
+
+            // Redirigir al index si el origen es 'index', si no, al listado
+            if ("index".equals(origen)) {
+                return "/paginas/index";
+            } else {
+                return "redirect:/usuarios/lista";
+            }
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al guardar usuario" +e.getMessage());
-            if (usuarioDTO.getId()==null) {
-                return "redirect:/usuarios/registro";
-            }else{
-                return "redirect:/usuarios/editar/"+usuarioDTO.getId();
+            redirectAttributes.addFlashAttribute("error", "Error al guardar usuario: " + e.getMessage());
+
+            if (usuarioDTO.getId() == null) {
+                // Conservar el origen si viene del index
+                return "redirect:/usuarios/registro" + (origen != null ? "?origen=" + origen : "");
+            } else {
+                return "redirect:/usuarios/editar/" + usuarioDTO.getId();
             }
         }
     }
