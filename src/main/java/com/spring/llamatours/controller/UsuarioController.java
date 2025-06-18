@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.spring.llamatours.DTOs.UsuarioDTO;
 import com.spring.llamatours.services.UsuarioService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,9 +60,23 @@ public class UsuarioController {
 
     @PostMapping("/guardar") // guardar/actualizar
     public String guardarUsuario(
-            @ModelAttribute UsuarioDTO usuarioDTO,
+            @Valid @ModelAttribute("usuario") UsuarioDTO usuarioDTO,
+            BindingResult bindingResult,
             @RequestParam(required = false) String origen,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
+        
+        if (bindingResult.hasErrors()) {
+            System.out.println("ERRORESEEEEEEES");
+            bindingResult.getAllErrors().forEach(error -> {
+                System.out.println("Código: " + error.getCode());
+                System.out.println("Campo: " + (error instanceof FieldError ? ((FieldError) error).getField() : "N/A"));
+                System.out.println("Mensaje: " + error.getDefaultMessage());
+            });
+            model.addAttribute("usuario", usuarioDTO);
+            model.addAttribute("origen", origen);
+            return "usuarios/formulario";
+        }
         try {
             if (usuarioDTO.getId() == null) {
                 usuarioService.saveUsuario(usuarioDTO);
@@ -81,7 +98,7 @@ public class UsuarioController {
 
             if (usuarioDTO.getId() == null) {
                 // Conservar el origen si viene del index
-                return "redirect:/usuarios/registro" + (origen != null ? "?origen=" + origen : "");
+                return "redirect:/usuarios/registro";
             } else {
                 return "redirect:/usuarios/editar/" + usuarioDTO.getId();
             }
