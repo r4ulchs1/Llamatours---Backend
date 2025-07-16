@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioService {
     private final UsuarioRepo usuarioRepo;
     private final UsuarioMapper usuarioMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public List<UsuarioDTO> findAllUsuarios(){
@@ -43,6 +45,7 @@ public class UsuarioService {
         }
         
         Usuario usuario= usuarioMapper.toEntity(usuarioDTO);
+        usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         usuario.setRol(RolNombre.USUARIO); //por defecto
         usuario.setFechaRegistro(LocalDateTime.now());
 
@@ -65,10 +68,13 @@ public class UsuarioService {
 
         usuarioExiste.setNombre(usuarioDTO.getNombre());
         usuarioExiste.setEmail(usuarioDTO.getEmail());
-        usuarioExiste.setPassword(usuarioDTO.getPassword());
         usuarioExiste.setTelefono(usuarioDTO.getTelefono());
         
+         if (usuarioDTO.getPassword() != null && !usuarioDTO.getPassword().isBlank()) {
+            usuarioExiste.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
+        }
         Usuario updatedUsuario=usuarioRepo.save(usuarioExiste);
+        
 
         return usuarioMapper.toDTO(updatedUsuario);
     }
@@ -80,5 +86,11 @@ public class UsuarioService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public Optional<UsuarioDTO> findUsuarioByCorreo(String correo) {
+        return usuarioRepo.findByEmail(correo)
+                .map(usuarioMapper::toDTO);
     }
 }

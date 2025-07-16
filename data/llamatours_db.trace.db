@@ -1,0 +1,4 @@
+2025-07-15 21:43:44.088155-05:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "RESERVACION" no encontrada
+Table "RESERVACION" not found; SQL statement:
+select * from reservacion [42102-232]

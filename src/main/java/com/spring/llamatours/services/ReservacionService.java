@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class ReservacionService {
+    private final PagoService pagoService;
     private final ReservacionRepo reservacionRepo;
     private final ReservacionMapper reservacionMapper;
 
@@ -41,31 +42,30 @@ public class ReservacionService {
     }
 
     @Transactional
-    public ReservacionDTO saveReservacion(ReservacionDTO reservacionDTO){
-        Reservacion reservacion= reservacionMapper.toEntity(reservacionDTO);
+    public ReservacionDTO saveReservacion(ReservacionDTO reservacionDTO) {
+        Reservacion reservacion = reservacionMapper.toEntity(reservacionDTO);
 
-        //bucar usuario
-        Usuario usuario= usuarioRepo.findById(reservacionDTO.getUsuarioId())
-                                    .orElseThrow(()-> new RuntimeException("Usuario no encontrado para la reservacion"));
+        Usuario usuario = usuarioRepo.findById(reservacionDTO.getUsuarioId())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado para la reservación"));
         reservacion.setUsuario(usuario);
 
-        //buscar destino
-        Destino destino= destinoRepo.findById(reservacionDTO.getDestinoId())
-                                    .orElseThrow(()-> new RuntimeException("Destino no encontrado para la reservacion"));
+        Destino destino = destinoRepo.findById(reservacionDTO.getDestinoId())
+            .orElseThrow(() -> new RuntimeException("Destino no encontrado para la reservación"));
         reservacion.setDestino(destino);
 
         reservacion.setFechaReserva(LocalDate.now());
         reservacion.setEstado(EstadoReserva.PENDIENTE);
-        Reservacion savedReservacion=reservacionRepo.save(reservacion);
+        Reservacion savedReservacion = reservacionRepo.save(reservacion);
 
-        //actualizar cupos disponibles del DESTINO
-        
-        int cupos= destino.getCuposDisponibles()-reservacion.getCantidadPersonas();
-        if (cupos<0){
+        int cupos = destino.getCuposDisponibles() - reservacion.getCantidadPersonas();
+        if (cupos < 0) {
             throw new RuntimeException("No hay suficientes cupos");
         }
         destino.setCuposDisponibles(cupos);
         destinoRepo.save(destino);
+
+        pagoService.crearPagoPendienteParaReserva(savedReservacion);
+
         return reservacionMapper.toDTO(savedReservacion);
     }
 

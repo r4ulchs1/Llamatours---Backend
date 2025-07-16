@@ -1,5 +1,6 @@
 package com.spring.llamatours.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.llamatours.DTOs.PagoDTO;
 import com.spring.llamatours.DTOs.ReservacionDTO;
 import com.spring.llamatours.DTOs.UsuarioDTO;
+import com.spring.llamatours.mapper.PagoMapper;
+import com.spring.llamatours.model.Pago;
+import com.spring.llamatours.repos.PagoRepo;
 import com.spring.llamatours.services.PagoService;
 import com.spring.llamatours.services.ReservacionService;
 import com.spring.llamatours.services.UsuarioService;
@@ -35,6 +40,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class PagoController {
     private final PagoService pagoService;
+    private final PagoRepo pagoRepo;
+    private final PagoMapper pagoMapper;
     private final UsuarioService usuarioService;
     private final ReservacionService reservacionService;
 
@@ -64,12 +71,18 @@ public class PagoController {
     }
     
     @GetMapping("/registro")
-    public String mostrarFormularioRegistro(Model model) {
-        // List<UsuarioDTO> usuarios= usuarioService.findAllUsuarios();
-        List<ReservacionDTO> reservaciones= reservacionService.findAllReservaciones();
-        model.addAttribute("pago", new PagoDTO());
-        // model.addAttribute("usuarios", usuarios);
-        model.addAttribute("reservaciones", reservaciones);
+    public String mostrarFormularioRegistro(@RequestParam(required = false) Long reservacionId, Model model) {
+        PagoDTO pagoDTO = new PagoDTO();
+
+        if (reservacionId != null) {
+            Pago pago = pagoRepo.findByReservacionId(reservacionId)
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
+            pagoDTO = pagoMapper.toDTO(pago);
+        }
+
+        model.addAttribute("pago", pagoDTO);
+        model.addAttribute("reservaciones", reservacionService.findAllReservaciones());
+
         return "pagos/formulario";
     }
     
@@ -78,6 +91,7 @@ public class PagoController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("pago", pagoDTO);
             model.addAttribute("reservaciones", reservacionService.findAllReservaciones());
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>"+bindingResult);
             return "pagos/formulario";
         }
         try {
@@ -88,7 +102,7 @@ public class PagoController {
                 pagoService.updatePago(pagoDTO.getId(), pagoDTO);
                 redirectAttributes.addFlashAttribute("mensaje","Pago actualizado correctamente");
             }
-            return "redirect:/pagos/lista";
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error","Error al guardar el pago: "+e.getMessage());
             if (pagoDTO.getId()==null) {
@@ -157,6 +171,25 @@ public class PagoController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error","Error al hacer busqueda por usuario: "+ e.getMessage());
             return "redirect:/pagos/lista";
+        }
+    }
+
+    @GetMapping("/calcularMonto")
+    @ResponseBody
+    public String calcularMontoPorReservacion(@RequestParam Long reservacionId) {
+        try {
+            Optional<PagoDTO> pagoOpt = pagoService.findPagoByReservacionId(reservacionId);
+            if (pagoOpt.isPresent()) {
+                return pagoOpt.get().getMonto().toString();
+            } else {
+                ReservacionDTO reservacion = reservacionService.findReservacionById(reservacionId)
+                    .orElseThrow(() -> new RuntimeException("Reservación no encontrada"));
+                BigDecimal monto = BigDecimal.valueOf(reservacion.getCantidadPersonas())
+                        .multiply(reservacion.getDestino().getPrecio());
+                return monto.toString();
+            }
+        } catch (Exception e) {
+            return "0";
         }
     }
 }

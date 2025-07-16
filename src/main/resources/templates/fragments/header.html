@@ -1,3 +1,4 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="header">
     <header>
         <nav id="navbar" class="navbar navbar-expand-lg fixed-top navbar-blur">
@@ -12,16 +13,31 @@
                     <ul id="menuu" class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item"><a th:href="@{/}" class="nav-link text-dark fw-bold">Inicio</a></li>
                         <li class="nav-item"><a th:href="@{/viaje}" class="nav-link text-dark fw-bold">Viajes</a></li>
-                        <li class="nav-item"><a th:href="@{/contacto}" class="nav-link text-dark fw-bold">Contacto</a></li>
-                        <li class="nav-item"><a th:href="@{/nosotros}" class="nav-link text-dark fw-bold">Sobre Nosotros</a></li>
-                        <li class="nav-item">
+                        <li class="nav-item"><a th:href="@{/contacto}" class="nav-link text-dark fw-bold">Contacto</a>
+                        </li>
+                        <li class="nav-item"><a th:href="@{/nosotros}" class="nav-link text-dark fw-bold">Sobre
+                                Nosotros</a></li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{/usuarios/lista}" class="nav-link text-dark fw-bold">Admin</a>
                         </li>
-                        <li id="change" class="nav-item">
-                            <a th:href="@{/usuarios/registro(origen='index')}" class="btn fw-bold ms-3"
-                                style="background-color: rgb(226, 226, 4); color: #000;">
-                                <i class="bi bi-person-plus-fill"></i> Registrar nuevo usuario
+                        <li class="nav-item" sec:authorize="hasRole('USUARIO')">
+                            <a th:href="@{/perfil}" class="nav-link text-dark fw-bold">Mi Perfil</a>
+                        </li>
+                        <!-- Mostrar solo si el usuario NO está autenticado -->
+                        <li id="change" class="nav-item" sec:authorize="isAnonymous()">
+                            <a th:href="@{/login}" class="btn fw-bold ms-3"
+                               style="background-color: rgb(226, 226, 4); color: #000;">
+                                <i class="bi bi-person-plus-fill"></i> Login / Registro
                             </a>
+                        </li>
+
+                         <!-- Mostrar solo si el usuario está autenticado -->
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger fw-bold ms-3">
+                                    <i class="bi bi-box-arrow-right"></i> Salir
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -29,3 +45,5 @@
         </nav>
     </header>
 </div>
+
+</html>

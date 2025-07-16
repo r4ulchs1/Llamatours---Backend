@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReservacionDTO {
     private Long id;
+    private DestinoDTO destino;
+
 
     @NotNull(message = "El ID de usuario no puede ser nulo.")
     @Min(value = 1, message = "El ID de usuario debe ser un número positivo.")

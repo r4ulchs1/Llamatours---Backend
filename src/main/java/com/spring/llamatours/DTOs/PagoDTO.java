@@ -28,7 +28,7 @@ public class PagoDTO {
     @NotBlank(message = "El estado del pago no puede estar vacío.")
     private String estado;
 
-    @NotNull(message = "La fecha de pago no puede ser nula.")
+    // @NotNull(message = "La fecha de pago no puede ser nula.")
     @FutureOrPresent(message = "La fecha de pago debe ser hoy o en el futuro.")
     private LocalDate fechaPago;
 }

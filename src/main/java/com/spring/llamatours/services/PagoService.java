@@ -41,24 +41,29 @@ public class PagoService {
 
     @Transactional
     public PagoDTO savePago(PagoDTO pagoDTO){
-        Pago pago=pagoMapper.toEntity(pagoDTO);
+        Pago pago = pagoMapper.toEntity(pagoDTO);
 
-        Reservacion reservacion=reservacionRepo.findById(pagoDTO.getReservacionId())
-                                .orElseThrow(()-> new RuntimeException("Reservacion no encontrada para el pago"));
+        Reservacion reservacion = reservacionRepo.findById(pagoDTO.getReservacionId())
+                                .orElseThrow(() -> new RuntimeException("Reservación no encontrada para el pago"));
 
         if (pagoRepo.findByReservacionId(reservacion.getId()).isPresent()) {
-            throw new RuntimeException("La reservacion ya tiene un pago");
+            throw new RuntimeException("La reservación ya tiene un pago");
         }
-        
-        BigDecimal monto= BigDecimal.valueOf(reservacion.getCantidadPersonas()).multiply(reservacion.getDestino().getPrecio());
+
+        // ✅ Validar monto proveniente del formulario
+        BigDecimal montoEsperado = BigDecimal.valueOf(reservacion.getCantidadPersonas())
+                                .multiply(reservacion.getDestino().getPrecio());
+
+        if (pagoDTO.getMonto() == null || pagoDTO.getMonto().compareTo(montoEsperado) != 0) {
+            throw new RuntimeException("El monto no es válido o fue manipulado.");
+        }
+
         pago.setReservacion(reservacion);
-
         pago.setFechaPago(LocalDate.now());
-        // pago.setMetodoPago(MetodoPago.EFECTIVO);
         pago.setEstado(EstadoPago.PENDIENTE);
-        pago.setMonto(monto);
+        pago.setMonto(pagoDTO.getMonto()); // ← Lo usas del formulario validado
 
-        Pago savedPago= pagoRepo.save(pago);
+        Pago savedPago = pagoRepo.save(pago);
 
         reservacion.setEstado(EstadoReserva.CONFIRMADA);
         reservacionRepo.save(reservacion);
@@ -66,16 +71,25 @@ public class PagoService {
         return pagoMapper.toDTO(savedPago);
     }
 
-    @Transactional
-    public PagoDTO updatePago(Long id, PagoDTO pagoDTO){
-        Pago pagoExiste= pagoRepo.findById(id)
-                        .orElseThrow(()-> new RuntimeException("Pago no encontrrado"));
-        // pagoExiste.setMonto(pagoDTO.getMonto());
-        pagoExiste.setMetodoPago(pagoDTO.getMetodoPago()!=null?MetodoPago.valueOf(pagoDTO.getMetodoPago()):null);
-        pagoExiste.setEstado(pagoDTO.getEstado()!=null?EstadoPago.valueOf(pagoDTO.getEstado()):null);
-        // pagoExiste.setFechaPago(pagoDTO.getFechaPago());
 
-        Pago updatedPago= pagoRepo.save(pagoExiste);
+    @Transactional
+    public PagoDTO updatePago(Long id, PagoDTO pagoDTO) {
+        Pago pagoExiste = pagoRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
+
+        if (pagoDTO.getMetodoPago() != null && !pagoDTO.getMetodoPago().isBlank()) {
+            pagoExiste.setMetodoPago(MetodoPago.valueOf(pagoDTO.getMetodoPago()));
+        }
+        pagoExiste.setEstado(EstadoPago.COMPLETADO);
+
+        pagoExiste.setFechaPago(LocalDate.now());
+
+        Pago updatedPago = pagoRepo.save(pagoExiste);
+
+        Reservacion reservacion = pagoExiste.getReservacion();
+        reservacion.setEstado(EstadoReserva.CONFIRMADA);
+        reservacionRepo.save(reservacion);
+
         return pagoMapper.toDTO(updatedPago);
     }
 
@@ -97,5 +111,20 @@ public class PagoService {
     @Transactional
     public Optional<PagoDTO> findPagoByReservacionId(Long reservacoinId){
         return pagoRepo.findByReservacionId(reservacoinId).map(pagoMapper::toDTO);
+    }
+
+    @Transactional
+    public Pago crearPagoPendienteParaReserva(Reservacion reservacion) {
+        Pago pago = new Pago();
+        pago.setReservacion(reservacion);
+        pago.setEstado(EstadoPago.PENDIENTE);
+        pago.setMetodoPago(null);
+        pago.setFechaPago(null);
+
+        BigDecimal monto = reservacion.getDestino().getPrecio()
+                .multiply(BigDecimal.valueOf(reservacion.getCantidadPersonas()));
+        pago.setMonto(monto);
+
+        return pagoRepo.save(pago);
     }
 }
